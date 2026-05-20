@@ -1,4 +1,4 @@
-name: oh-my-posh
+name: ohmyposh
 version: 0.1.0
 type: python
 main: src/plugin.py

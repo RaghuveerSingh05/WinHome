@@ -37,11 +37,11 @@ def write_profile(profile_path: str, content: str) -> None:
 # Commands 
 
 def apply_config(args: dict, context: dict, request_id: str) -> dict:
-    theme = args.get("theme")
+    theme = args.get("theme") or args.get("settings", {}).get("theme")
     if not theme:
         return {"requestId": request_id, "success": False, "changed": False, "error": "No theme specified"}
 
-    profile_path = args.get("profile", PROFILE_PATH)
+    profile_path = args.get("profile") or args.get("settings", {}).get("profile") or PROFILE_PATH
     desired_line = build_omp_line(theme)
     current_content = read_profile(profile_path)
 
@@ -78,8 +78,8 @@ def apply_config(args: dict, context: dict, request_id: str) -> dict:
 
 
 def check_installed(args: dict, request_id: str) -> dict:
-    theme = args.get("theme")
-    profile_path = args.get("profile", PROFILE_PATH)
+    theme = args.get("theme") or args.get("settings", {}).get("theme")
+    profile_path = args.get("profile") or args.get("settings", {}).get("profile") or PROFILE_PATH
     current_content = read_profile(profile_path)
 
     if theme:

@@ -23,10 +23,11 @@ obsidian:
         spellcheck: true
       plugins:
         - "obsidian-git"
-  ohmyposh:
-    profile: "C:\\Users\\test\\Documents\\PowerShell\\Microsoft.PowerShell_profile.ps1"
-    settings:
-      theme: "tokyonight"
+
+ohmyposh:
+  profile: "C:\\Users\\test\\Documents\\PowerShell\\Microsoft.PowerShell_profile.ps1"
+  settings:
+    theme: "tokyonight"
 
 # Generic Plugin Section
 extensions:
@@ -34,3 +35,4 @@ extensions:
     message: "Python Plugin Integration Test"
   test-echo-js:
     message: "JavaScript Plugin Integration Test"
+  
