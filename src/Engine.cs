@@ -1,4 +1,4 @@
-using System.Text.Json;
+using System.Collections.Concurrent;
 using WinHome.Interfaces;
 using WinHome.Models;
 using WinHome.Services;
@@ -134,18 +134,25 @@ namespace WinHome
 
             var previousState = _stateService.LoadState();
             currentState.SystemSettingOriginals = new Dictionary<string, object>(previousState.SystemSettingOriginals);
+            var confirmedApplied = new HashSet<string>(previousState.AppliedItems, StringComparer.OrdinalIgnoreCase);
+            var hadSuccessfulApply = false;
 
             // Cleanup
             var itemsToRemove = previousState.AppliedItems.Except(currentState.AppliedItems).ToList();
             if (itemsToRemove.Any())
             {
                 _logger.LogInfo("\n--- Cleaning Up ---");
+                var removedItems = new ConcurrentBag<string>();
                 await Task.Run(() => Parallel.ForEach(itemsToRemove, uniqueId =>
                 {
                     if (uniqueId.StartsWith("reg:"))
                     {
                         var parts = uniqueId.Substring(4).Split('|', 2);
-                        if (parts.Length == 2) _registry.Revert(parts[0], parts[1], dryRun);
+                        if (parts.Length == 2 && _registry.Revert(parts[0], parts[1], dryRun) && !dryRun)
+                        {
+                            removedItems.Add(uniqueId);
+                            confirmedApplied.Remove(uniqueId);
+                        }
                     }
                     else
                     {
@@ -153,9 +160,19 @@ namespace WinHome
                         if (parts.Length == 2 && _managers.TryGetValue(parts[0], out var mgr))
                         {
                             mgr.Uninstall(parts[1], dryRun);
+                            if (!dryRun)
+                            {
+                                removedItems.Add(uniqueId);
+                                confirmedApplied.Remove(uniqueId);
+                            }
                         }
                     }
                 }));
+
+                foreach (var item in removedItems)
+                {
+                    _stateService.RemoveApplied(item);
+                }
             }
 
             // Revert system settings that are no longer in config
@@ -283,7 +300,8 @@ namespace WinHome
                                 _stateWriter.RecordStep(successResult);
                                 applyState[stepId] = successResult;
 
-                                _stateService.MarkAsApplied(stepId);
+                                confirmedApplied.Add(stepId);
+                                hadSuccessfulApply = true;
                             }
 
                             _env.RefreshPath();
@@ -406,7 +424,11 @@ namespace WinHome
 
                     try
                     {
-                        _registry.Apply(tweak, dryRun);
+                        var applied = _registry.Apply(tweak, dryRun);
+                        if (!applied)
+                        {
+                            throw new Exception($"Failed to apply registry tweak {tweak.Path}|{tweak.Name}.");
+                        }
 
                         if (!dryRun)
                         {
@@ -421,7 +443,8 @@ namespace WinHome
                             _stateWriter.RecordStep(successResult);
                             applyState[stepId] = successResult;
 
-                            _stateService.MarkAsApplied(stepId);
+                            confirmedApplied.Add(stepId);
+                            hadSuccessfulApply = true;
                         }
                     }
                     catch (Exception ex)
@@ -487,8 +510,13 @@ namespace WinHome
 
             if (!dryRun)
             {
-                _stateService.SaveState(currentState);
-                _logger.LogSuccess("\n[State Saved] Configuration synced.");
+                if (hadSuccessfulApply)
+                {
+                    currentState.AppliedItems = confirmedApplied;
+                    _stateService.SaveState(currentState);
+                }
+
+                _logger.LogSuccess("\n[State Synced] Applied changes flushed.");
             }
             else
             {
