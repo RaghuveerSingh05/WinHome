@@ -69,7 +69,8 @@ WinHome ships as a **self-contained single EXE** (no .NET runtime needed), compa
 ### Method 2: Quick Install (PowerShell One-Liner)
 
 ```powershell
-Invoke-WebRequest -Uri "https://github.com/DotDev262/WinHome/releases/latest/download/WinHome.exe" -OutFile "WinHome.exe"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "iwr -useb https://github.com/DotDev262/WinHome/releases/latest/download/WinHome.exe -OutFile WinHome.exe"
+
 ```
 
 ### Method 3: winget *(coming soon)*
