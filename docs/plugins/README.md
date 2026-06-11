@@ -1,6 +1,6 @@
 # Plugin Directory
 
-WinHome currently ships with 36 built-in plugins under `plugins/`. This page acts as a
+WinHome currently ships with 41 built-in plugins under `plugins/`. This page acts as a
 marketplace-style index for those plugins and a quick reference for how each one is enabled from
 `config.yaml`.
 
@@ -56,6 +56,7 @@ marketplace-style index for those plugins and a quick reference for how each one
 | `docker`   | Manages Docker Desktop `settings.json`.                      | `config_provider` | [Details](#docker)   |
 | `gh`       | Manages GitHub CLI `config.yml`.                             | `config_provider` | [Details](#gh)       |
 | `gh-dash`  | Manages `gh-dash` dashboard settings in `config.yml`.        | `config_provider` | [Details](#gh-dash)  |
+| `lazydocker` | Manages LazyDocker YAML configuration.                     | `config_provider` | [Details](#lazydocker) |
 | `lazygit`  | Manages `lazygit` YAML configuration.                        | `config_provider` | [Details](#lazygit)  |
 | `mise`     | Manages `config.toml` for the mise version manager.          | `config_provider` | [Details](#mise)     |
 | `opencode` | Manages OpenCode JSON and JSONC settings.                    | `config_provider` | [Details](#opencode) |
@@ -76,10 +77,14 @@ Deep-merges TOML settings into `%USERPROFILE%\.rustup\settings.toml`.
 | ------------ | --------------------------------------------------------------------------- | ----------------- | ---------------------- |
 | `autohotkey` | Manages an AutoHotkey v2 bootstrap script and WinHome-owned settings block. | `config_provider` | [Details](#autohotkey) |
 | `espanso`    | Manages Espanso text expansion rules in `base.yml`.                         | `config_provider` | [Details](#espanso)    |
+| `everything` | Manages Everything search application configuration.                        | `config_provider` | [Details](#everything) |
 | `keepassxc`  | Manages KeePassXC INI settings.                                             | `config_provider` | [Details](#keepassxc)  |
 | `powertoys`  | Manages PowerToys general settings and supported module settings.           | `config_provider` | [Details](#powertoys)  |
 | `sharex`     | Manages ShareX `ShareX.json`.                                               | `config_provider` | [Details](#sharex)     |
 | `rustup`     | Manages `settings.toml` for the Rust toolchain installer.                   | `config_provider` | [Details](#rustup)     |
+| `windows-explorer` | Manages Windows Explorer preferences and settings.                    | `config_provider` | [Details](#windows-explorer) |
+| `windows-sandbox` | Manages Windows Sandbox `.wsb` configuration settings.                 | `config_provider` | [Details](#windows-sandbox) |
+| `yasb` | Manages YASB status bar YAML configuration.                                       | `config_provider` | [Details](#yasb) |
 
 ### Community And Communication
 
@@ -366,6 +371,14 @@ Config key: `extensions.gh-dash`
 
 Merges dashboard settings into `%USERPROFILE%\.config\gh-dash\config.yml`.
 
+<a id="lazydocker"></a>
+
+#### lazydocker
+
+Config key: `extensions.lazydocker`
+
+Deep-merges YAML settings into `%APPDATA%\lazydocker\config.yml`.
+
 <a id="lazygit"></a>
 
 #### lazygit
@@ -434,6 +447,14 @@ Config key: `extensions.espanso`
 
 Merges Espanso config into `%APPDATA%\espanso\match\base.yml`.
 
+<a id="everything"></a>
+
+#### everything
+
+Config key: `extensions.everything`
+
+Manages supported Everything configuration settings through WinHome.
+
 <a id="keepassxc"></a>
 
 #### keepassxc
@@ -458,6 +479,30 @@ Manages general PowerToys settings plus supported module files such as `FancyZon
 Config key: `extensions.sharex`
 
 Deep-merges ShareX settings into `%APPDATA%\ShareX\ShareX.json`.
+
+<a id="windows-explorer"></a>
+
+#### windows-explorer
+
+Config key: `extensions.windows-explorer`
+
+Manages supported Windows Explorer settings and preferences through WinHome configuration.
+
+<a id="windows-sandbox"></a>
+
+#### windows-sandbox
+
+Config key: `extensions.windows-sandbox`
+
+Manages `%USERPROFILE%\Documents\sandbox.wsb`, including memory allocation, networking, device redirection, clipboard access, and mapped folders.
+
+<a id="yasb"></a>
+
+#### yasb
+
+Config key: `extensions.yasb`
+
+Deep-merges YAML settings into `%USERPROFILE%\.config\yasb\config.yaml`.
 
 ### Community And Communication
 
