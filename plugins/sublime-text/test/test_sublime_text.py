@@ -51,7 +51,7 @@ def test_apply_config_dry_run():
             }
         )
 
-        assert res["changed"] is False
+        assert res["changed"] is True
 
         print("✓ apply_config_dry_run")
 

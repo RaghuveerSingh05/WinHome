@@ -99,7 +99,7 @@ def apply_config(args: dict, context: dict, request_id: str) -> dict:
             log(f"Would update {config_path} with: {json.dumps(settings)}")
             return {
                 "requestId": request_id,
-                "changed": False,
+                "changed": True,
             }
 
         write_json(config_path, current_config)
